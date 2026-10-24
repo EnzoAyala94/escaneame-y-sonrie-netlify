@@ -6,6 +6,12 @@
 <title>Escanéame y Sonríe — Regalos personalizados con experiencias digitales</title>
 <meta name="description" content="Tarjetas y regalos con código QR que abren una experiencia digital privada. El Salvador.">
 <meta name="theme-color" content="#4A1420">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Escanéame">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2048%2048%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%2211%22%20fill%3D%22%23FFFDF9%22/%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%234A1420%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%2016V11a5%205%200%200%201%205-5h5%22/%3E%3Cpath%20d%3D%22M32%206h5a5%205%200%200%201%205%205v5%22/%3E%3Cpath%20d%3D%22M42%2032v5a5%205%200%200%201-5%205h-5%22/%3E%3Cpath%20d%3D%22M16%2042h-5a5%205%200%200%201-5-5v-5%22/%3E%3C/g%3E%3Crect%20x%3D%2215.5%22%20y%3D%2216%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.2%22%20fill%3D%22%234A1420%22/%3E%3Crect%20x%3D%2227%22%20y%3D%2216%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.2%22%20fill%3D%22%234A1420%22/%3E%3Cpath%20d%3D%22M15%2028.5q9%209.5%2018%200%22%20fill%3D%22none%22%20stroke%3D%22%23C6A15B%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -194,6 +200,8 @@ a.card:hover,.producto:hover{transform:translateY(-4px);box-shadow:var(--sombra)
 #btn-ia{white-space:nowrap}
 @media(max-width:640px){.ia-fila{grid-template-columns:1fr 1fr}.ia-fila input{grid-column:1/-1;grid-row:1}}
 .nota-pago{margin-top:1rem;font-size:.84rem}
+.aviso-ios{width:100%;text-align:left;background:rgba(198,161,91,.1);border:1px solid var(--dorado-claro);border-radius:12px;padding:.8rem 1rem;font-size:.88rem;display:grid;gap:.4rem}
+.aviso-ios ol{margin:0;padding-left:1.2rem;display:grid;gap:.25rem}
 .pago-codigo{font-size:.95rem;color:var(--muted)}
 .pago-codigo strong{font-size:1.4rem;letter-spacing:.12em;color:var(--vino-oscuro)}
 .pago-pasos{text-align:left;font-size:.92rem;display:grid;gap:.45rem;margin:0;padding-left:1.2rem}
@@ -260,6 +268,8 @@ a.card:hover,.producto:hover{transform:translateY(-4px);box-shadow:var(--sombra)
 .dato span{display:block;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .dato strong{font-size:1.05rem;color:var(--vino-oscuro)}
 .desglose-titulo{font-family:"Jost",sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:1.1rem 0 .2rem}
+.admin-aviso{font-size:.84rem;font-weight:500;color:#1F7A4D;background:rgba(31,122,77,.08);border-radius:10px;padding:.45rem .7rem}
+.admin-item.pendiente .admin-aviso{color:#8A5A10;background:rgba(198,161,91,.15)}
 .admin-nota{font-size:.78rem;color:var(--muted);font-style:italic}
 .aviso .btn{margin-top:.8rem}
 .estado-pago{display:inline-block;font-size:.72rem;padding:.15rem .5rem;border-radius:999px;background:rgba(198,161,91,.18);color:#7A5A20;margin-left:.3rem}
@@ -508,6 +518,11 @@ a.card:hover,.producto:hover{transform:translateY(-4px);box-shadow:var(--sombra)
         <div class="campo"><label for="destinatario">Para (nombre del destinatario) *</label><input id="destinatario" maxlength="40" required placeholder="María José" autocomplete="off"></div>
         <div class="campo"><label for="remitente">De (tu nombre) *</label><input id="remitente" maxlength="40" required placeholder="Carlos" autocomplete="name"></div>
       </div>
+      <div class="campo" id="campo-telefono" hidden>
+        <label for="telefono">Tu WhatsApp *</label>
+        <input id="telefono" type="tel" inputmode="tel" maxlength="16" placeholder="7123 4567" autocomplete="tel">
+        <span class="ayuda">Te avisaremos por aquí cuando tu pago esté aprobado. No se muestra a nadie más.</span>
+      </div>
 
       <div class="fila">
         <div class="campo"><label for="ocasion">Ocasión</label>
@@ -601,6 +616,16 @@ a.card:hover,.producto:hover{transform:translateY(-4px);box-shadow:var(--sombra)
         <div class="qr-acciones">
           <a class="btn btn-whatsapp ancho" id="pago-whatsapp" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>
           <button type="button" class="btn btn-secundario ancho" id="pago-revisar">Ya pagué: revisar estado</button>
+          <button type="button" class="btn btn-secundario ancho" id="pago-notificar" hidden>🔔 Avisarme en este teléfono cuando se apruebe</button>
+        </div>
+        <div class="aviso-ios" id="aviso-ios" hidden>
+          <strong>📱 ¿Quieres que te avisemos en tu iPhone?</strong>
+          <ol>
+            <li>Toca el botón <b>Compartir</b> <span aria-hidden="true">⬆️</span> de Safari.</li>
+            <li>Elige <b>“Agregar a pantalla de inicio”</b>.</li>
+            <li>Abre <b>Escanéame</b> desde tu pantalla de inicio y toca <b>🔔 Avisarme</b>.</li>
+          </ol>
+          <span class="ayuda">Tu regalo se abrirá ahí solo. Requiere iOS 16.4 o más reciente.</span>
         </div>
         <p class="ayuda" id="pago-estado-txt" aria-live="polite" style="margin:0">Esperando la confirmación de tu pago...</p>
       </div>
@@ -959,6 +984,7 @@ function actualizarBotonGenerar() {
   else b.textContent = 'Generar vista previa y QR';
   const nota = $('#nota-pago');
   nota.hidden = !(PAGOS.activo || PAGOS.manual);
+  $('#campo-telefono').hidden = !(PAGOS.activo || PAGOS.manual);
   nota.textContent = PAGOS.activo
     ? '🔒 Pago seguro con tarjeta de crédito o débito a través de Wompi. Tu QR se genera en cuanto se confirma el pago.'
     : '💳 Pagas por transferencia o Transfer365. Tu QR se genera en cuanto confirmamos tu pago.';
@@ -1004,7 +1030,12 @@ function bloquearQrActual(d) {
   const local = copiaLocalPorOnline(d.online) || d;
   local.estado = 'pendiente';
   if (PAGOS.activo) ofrecerReintento(d.online, 'El pago de este regalo no se confirmó, así que su QR quedó bloqueado.');
-  else { mostrarPendienteManual(local); mostrarEstado(`El pago del regalo ${codigoRegalo(d.online)} no se confirmó, así que su QR quedó bloqueado. Si ya pagaste, envíanos el comprobante por WhatsApp.`, true); }
+  else {
+    mostrarPendienteManual(local);
+    mostrarEstado(`No pudimos confirmar el pago del regalo ${codigoRegalo(d.online)}, así que su QR quedó bloqueado. Contáctanos por WhatsApp al ${CONFIG.whatsappVisible} para ayudarte.`, true,
+      { texto: `💬 Escribir al ${CONFIG.whatsappVisible}`, onclick: () => window.open(contactoBloqueo(d.online), '_blank', 'noopener') });
+  }
+  avisarCliente('Tu regalo quedó en pendiente', `No pudimos confirmar el pago del regalo ${codigoRegalo(d.online)}. Contáctanos por WhatsApp al ${CONFIG.whatsappVisible}.`);
 }
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && !$('#view-personalizar').hidden) sincronizarEstados();
@@ -1070,6 +1101,56 @@ async function revisarPagoPendiente() {
 
 /* ---------- Pago manual (transferencia + activación del administrador) ---------- */
 let sondeoPago = null;
+/* ---------- Avisos al teléfono del cliente (Android y iPhone) ----------
+   Android/Chrome: notificaciones con service worker + push (llegan aunque cierre la página).
+   iPhone/iPad: Apple solo las permite si la página se agrega a la pantalla de inicio (iOS 16.4+). */
+const esIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const esAppInstalada = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const soportaPush = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window && window.isSecureContext;
+let registroSW = null;
+async function obtenerSW() {
+  if (registroSW || !('serviceWorker' in navigator) || !window.isSecureContext || location.protocol === 'file:') return registroSW;
+  try { await navigator.serviceWorker.register('/sw.js'); registroSW = await navigator.serviceWorker.ready; } catch {}
+  return registroSW;
+}
+async function avisarCliente(titulo, cuerpo) {
+  try { navigator.vibrate?.([200, 100, 200]); } catch {}
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const opciones = { body: cuerpo, icon: '/icon-192.png', badge: '/icon-192.png', tag: 'regalo' };
+  try { const r = await obtenerSW(); if (r) { await r.showNotification(titulo, opciones); return; } } catch {}
+  try { new Notification(titulo, opciones); } catch {} // computadoras sin service worker
+}
+const b64aBytes = b => { const s = atob(b.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - b.length % 4) % 4)); return Uint8Array.from(s, c => c.charCodeAt(0)); };
+async function activarAvisos(idOnline) {
+  if (!soportaPush()) throw new Error('Este navegador no permite avisos.');
+  const permiso = await Notification.requestPermission(); // debe pedirse con un toque (requisito de iPhone)
+  if (permiso !== 'granted') throw new Error('No diste permiso para los avisos. Puedes activarlo en los ajustes del navegador.');
+  const reg = await obtenerSW(); if (!reg) throw new Error('No se pudo preparar el servicio de avisos.');
+  const { publico } = await (await fetch('/api/aviso?clave=1', { cache: 'no-store' })).json();
+  let sus = await reg.pushManager.getSubscription();
+  try { if (!sus) sus = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(publico) }); }
+  catch { throw new Error('Este navegador no permitió activar los avisos. Mantén esta página abierta o te avisaremos por WhatsApp.'); }
+  const r = await fetch('/api/aviso', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: idOnline, suscripcion: sus.toJSON() }) });
+  if (!r.ok) throw new Error('No se pudo registrar el aviso. Intenta de nuevo.');
+  try { localStorage.setItem('escaneame_avisos_' + idOnline, '1'); } catch {}
+}
+function prepararBotonNotificar(idOnline) {
+  const b = $('#pago-notificar'), ios = $('#aviso-ios');
+  const yaActivo = (() => { try { return localStorage.getItem('escaneame_avisos_' + idOnline) === '1' && Notification.permission === 'granted'; } catch { return false; } })();
+  ios.hidden = !(esIOS && !esAppInstalada()); // en iPhone primero hay que agregarla a la pantalla de inicio
+  b.hidden = !soportaPush() || (esIOS && !esAppInstalada()) || ('Notification' in window && Notification.permission === 'denied');
+  b.disabled = yaActivo;
+  b.textContent = yaActivo ? '🔔 Avisos activados en este teléfono' : '🔔 Avisarme en este teléfono cuando se apruebe';
+  b.onclick = async () => {
+    b.disabled = true; b.textContent = 'Activando...';
+    try { await activarAvisos(idOnline); toast('Listo: te avisaremos aunque cierres la página'); }
+    catch (e) { toast(e.message); }
+    prepararBotonNotificar(idOnline);
+  };
+}
+function contactoBloqueo(idOnline) {
+  return enlaceWhatsApp(`Hola, mi regalo con código ${codigoRegalo(idOnline)} aparece como pendiente / bloqueado. ¿Me pueden ayudar?`);
+}
 const codigoRegalo = idOnline => idOnline.slice(0, 6).toUpperCase();
 function mensajePagoManual(d, idOnline) {
   const p = PAQUETES[d.paquete] || PAQUETES.especial;
@@ -1114,6 +1195,9 @@ function mostrarPendienteManual(datos) {
   $('#pago-estado-txt').textContent = 'Esperando la confirmación de tu pago...';
   $('#pago-revisar').onclick = () => revisarPagoManual(idOnline, true);
   $('#pago-panel').hidden = false;
+  prepararBotonNotificar(idOnline);
+  // La dirección guarda el regalo: si lo agregan a la pantalla de inicio (iPhone), la app abre este regalo
+  if (!location.hash.includes('ver=' + idOnline)) history.replaceState(null, '', `${location.pathname}#personalizar?ver=${idOnline}`);
   try { localStorage.setItem(CLAVE_PAGO, idOnline); } catch {}
   clearInterval(sondeoPago);
   sondeoPago = setInterval(() => { if (document.visibilityState === 'visible') revisarPagoManual(idOnline, false); }, 15000);
@@ -1124,6 +1208,7 @@ async function revisarPagoManual(idOnline, manualmente) {
   const estado = await estadoPago(idOnline);
   if (estado === 'pagado') {
     clearInterval(sondeoPago); $('#pago-panel').hidden = true;
+    avisarCliente('¡Tu pago fue aprobado! 🎉', `Tu regalo ${codigoRegalo(idOnline)} ya está activo. Entra para ver y descargar tu QR.`);
     try { await mostrarRegaloPagado(idOnline); } catch (e) { mostrarEstado(e.message, true); }
   } else if (manualmente) {
     $('#pago-estado-txt').textContent = estado === 'pendiente'
@@ -1238,6 +1323,17 @@ function renderDesglose(ventas, hoy) {
   $('#desglose-pagos').replaceChildren(...filasDe(agrupar(r => VIAS[r.pago?.via] || 'Pago confirmado')));
 }
 
+const avisosPorEnviar = new Set(); // regalos recién aprobados o bloqueados: se resalta el botón de aviso
+function mensajeAprobado(r) {
+  return [`¡Hola ${r.remitente}! 🎉`, `Tu pago del regalo ${r.codigo} para ${r.destinatario} fue *aprobado*.`,
+    '', 'Ya puedes ver y descargar tu código QR en la página donde reservaste.', `Experiencia: ${urlBase()}#experiencia?r=${r.id}`,
+    '', '¡Gracias por comprar en Escanéame y Sonríe! 💛'].join('\n');
+}
+function mensajeBloqueado(r) {
+  return [`Hola ${r.remitente},`, `no pudimos confirmar el pago de tu regalo ${r.codigo}, por eso quedó *pendiente* y su QR está desactivado por ahora.`,
+    '', `Por favor contáctanos por este WhatsApp (${CONFIG.whatsappVisible}) para ayudarte a resolverlo.`, '', 'Escanéame y Sonríe'].join('\n');
+}
+
 function renderAdmin() {
   renderIngresos();
   const enHistorial = adminFiltro === 'historial', enIngresos = adminFiltro === 'ingresos';
@@ -1262,30 +1358,42 @@ function renderAdmin() {
     const acciones = el('div', { className: 'admin-acciones' });
     const boton = (texto, clase, fn) => { const b = el('button', { type: 'button', className: 'btn ' + clase, textContent: texto }); b.onclick = async () => { b.disabled = true; try { await fn(); } catch (e) { alert(e.message); } b.disabled = false; }; return b; };
     const accion = async (a) => {
-      try { await adminFetch('', { method: 'POST', body: JSON.stringify({ id: r.id, accion: a }) }); }
+      let res = {};
+      try { res = await adminFetch('', { method: 'POST', body: JSON.stringify({ id: r.id, accion: a }) }); }
       catch (e) { if (!(a === 'eliminar' && /No encontramos/.test(e.message))) throw e; } // ya estaba eliminado
       const estado = { eliminar: 'eliminado', activar: 'entregado', pendiente: 'pendiente' }[a];
       const ahora = new Date().toISOString();
       cambiosAdmin.set(r.id, { estado, t: Date.now() });
+      if (estado === 'entregado' || estado === 'pendiente') avisosPorEnviar.add(r.id); else avisosPorEnviar.delete(r.id);
       adminDatos = estado === 'eliminado' ? adminDatos.filter(x => x.id !== r.id)
-        : adminDatos.map(x => x.id === r.id ? { ...x, estado, pago: estado === 'entregado' ? { via: 'manual', fecha: ahora } : null, entrega: estado === 'entregado' ? { fecha: ahora } : null } : x);
+        : adminDatos.map(x => x.id === r.id ? { ...x, estado, pago: estado === 'entregado' ? { via: 'manual', fecha: ahora } : null, entrega: estado === 'entregado' ? { fecha: ahora } : null, bloqueado: estado === 'pendiente' ? { fecha: ahora } : null } : x);
       renderAdmin();
-      toast({ eliminado: `Regalo ${r.codigo} eliminado`, entregado: `Regalo ${r.codigo} pagado y entregado ✓`, pendiente: `Regalo ${r.codigo} bloqueado` }[estado]);
+      const enTelefono = res.avisados > 0 ? ' · 🔔 Notificación enviada a su teléfono' : '';
+      toast({ eliminado: `Regalo ${r.codigo} eliminado`, entregado: `Regalo ${r.codigo} aprobado ✓${enTelefono || ' · Avísale por WhatsApp'}`, pendiente: `Regalo ${r.codigo} bloqueado${enTelefono || ' · Avísale por WhatsApp'}` }[estado]);
+    };
+    const aviso = (texto, mensaje) => {
+      const a = el('a', { className: 'btn ' + (avisosPorEnviar.has(r.id) ? 'btn-whatsapp' : 'btn-secundario'), href: enlaceWhatsAppA(r.telefono, mensaje), target: '_blank', rel: 'noopener', textContent: texto });
+      a.addEventListener('click', () => { avisosPorEnviar.delete(r.id); setTimeout(renderAdmin, 300); });
+      return a;
     };
     if (r.estado === 'pendiente') {
+      if (r.bloqueado) acciones.append(aviso('📲 Avisar bloqueo al cliente', mensajeBloqueado(r)));
       acciones.append(boton('✓ Marcar como pagado', 'btn-primario', () => accion('activar')));
       acciones.append(boton('Eliminar', 'btn-secundario', async () => { if (confirm(`¿Eliminar el regalo ${r.codigo} para ${r.destinatario}? Se borra para siempre.`)) await accion('eliminar'); }));
     } else {
+      acciones.append(aviso('📲 Avisar aprobación al cliente', mensajeAprobado(r)));
       acciones.append(el('a', { className: 'btn btn-secundario', href: '#experiencia?r=' + r.id, target: '_blank', rel: 'noopener', textContent: 'Ver experiencia' }));
       acciones.append(boton('Bloquear (volver a pendiente)', 'btn-secundario', async () => { if (confirm(`¿Bloquear el regalo ${r.codigo}? Su QR dejará de abrir en todos los teléfonos y saldrá de tus ingresos hasta que lo vuelvas a marcar como pagado.`)) await accion('pendiente'); }));
     }
     const fechas = [`Creado ${fechaCorta(r.creado)}`];
     if (esPagado(r)) fechas.push(`Pagado ${fechaCorta(fechaPago(r))}`);
     cont.append(el('article', { className: 'admin-item ' + (esPagado(r) ? 'entregado' : r.estado) },
-      el('div', { className: 'admin-cab' }, el('span', { className: 'admin-cod', textContent: r.codigo }), el('span', { className: 'etq ' + (esPagado(r) ? 'entregado' : r.estado), textContent: ETIQUETAS[r.estado] || r.estado })),
+      el('div', { className: 'admin-cab' }, el('span', { className: 'admin-cod', textContent: r.codigo }), el('span', { className: 'etq ' + (esPagado(r) ? 'entregado' : r.estado), textContent: r.estado === 'pendiente' && r.bloqueado ? 'Bloqueado · pendiente' : (ETIQUETAS[r.estado] || r.estado) })),
       el('strong', { textContent: `Para ${r.destinatario} · De ${r.remitente}` }),
       el('span', { className: 'admin-meta', textContent: `${(PAQUETES[r.paquete] || {}).nombre || r.paquete} · ${dinero(r.precio || 0)} · ${r.fotos} foto${r.fotos === 1 ? '' : 's'}` }),
       el('span', { className: 'admin-meta', textContent: fechas.join(' · ') }),
+      el('span', { className: 'admin-meta', textContent: r.telefono ? `📱 ${telefonoVisible(r.telefono)}` : '📱 Sin WhatsApp registrado (al avisar eliges el contacto)' }),
+      ...(avisosPorEnviar.has(r.id) ? [el('span', { className: 'admin-aviso', textContent: r.estado === 'pendiente' ? '⚠️ Avísale al cliente que su regalo quedó bloqueado' : '✅ Avísale al cliente que su pago fue aprobado' })] : []),
       acciones));
   });
 }
@@ -1616,7 +1724,7 @@ const activarReveals = () => observarVisibles('[data-reveal]:not(.visible)');
 /* ---------- Personalizador ---------- */
 let fotosSel = [];        // [{nombre, src}]
 let ultimoRegalo = null;  // {datos, url}
-const CAMPOS = ['paquete', 'destinatario', 'remitente', 'ocasion', 'tema', 'dedicatoria', 'musica', 'mensaje-final'];
+const CAMPOS = ['paquete', 'destinatario', 'remitente', 'telefono', 'ocasion', 'tema', 'dedicatoria', 'musica', 'mensaje-final'];
 const paqueteActual = () => PAQUETES[$('#paquete').value] || PAQUETES.especial;
 
 function actualizarPreview() {
@@ -1734,7 +1842,31 @@ function initPersonalizador() {
   alCambiarPaquete(); actualizarPreview(); renderMiniaturas();
 }
 
+async function abrirRegaloVer(idOnline) {
+  await configPagosLista;
+  let info = null;
+  try { const r = await fetch(`/api/aviso?info=${idOnline}`, { cache: 'no-store' }); if (r.ok) info = await r.json(); } catch {}
+  if (!info) { // sin la función de avisos: usar el estado y la copia local
+    const e = await estadoPago(idOnline), local = copiaLocalPorOnline(idOnline);
+    if (e === 'pagado') { try { await mostrarRegaloPagado(idOnline); } catch {} }
+    else if (e === 'pendiente' && local) mostrarPendienteManual(local);
+    return;
+  }
+  if (info.estado === 'pagado') { $('#pago-panel').hidden = true; try { await mostrarRegaloPagado(idOnline); } catch (e) { mostrarEstado(e.message, true); } return; }
+  let local = copiaLocalPorOnline(idOnline);
+  if (!local) {
+    local = { id: nuevoId(), online: idOnline, estado: 'pendiente', paquete: info.paquete, destinatario: info.destinatario, remitente: info.remitente, fotos: [], recuerdos: [], creado: new Date().toISOString() };
+    try { guardarExp(local.id, local); } catch {}
+  }
+  mostrarPendienteManual(local);
+  if (info.bloqueado) mostrarEstado(`No pudimos confirmar el pago del regalo ${info.codigo}, así que su QR quedó bloqueado. Contáctanos por WhatsApp al ${CONFIG.whatsappVisible}.`, true,
+    { texto: `💬 Escribir al ${CONFIG.whatsappVisible}`, onclick: () => window.open(contactoBloqueo(idOnline), '_blank', 'noopener') });
+  renderMisRegalos();
+}
+
 function entrarPersonalizador(params) {
+  const ver = params.get('ver');
+  if (ver && /^[a-f0-9]{20}$/.test(ver) && puedeSubir) { procesandoRetorno = true; abrirRegaloVer(ver).finally(() => { procesandoRetorno = false; }); }
   const p = params.get('paquete'), o = params.get('ocasion');
   if (p && PAQUETES[p]) { ocasionManual = false; $('#paquete').value = p; alCambiarPaquete(); }
   if (o && OCASIONES[o]) { $('#ocasion').value = o; ocasionManual = true; }
@@ -1765,10 +1897,17 @@ async function crearRegalo(e) {
   if (faltan.length) { mostrarEstado('Falta completar: ' + faltan.map(id => campos[id]).join(', ') + '.', true); $('#' + faltan[0]).focus({ preventScroll: true }); return; }
   if (fotosSel.length && !$('#permiso').checked) { mostrarEstado('Confirma que tienes permiso de las personas que aparecen en las fotos.', true); return; }
   if (typeof qrcode === 'undefined') { mostrarEstado('No se pudo cargar el generador de QR. Revisa tu conexión a internet y recarga la página.', true); return; }
+  const telefono = normalizarTelefono($('#telefono').value);
+  if ((PAGOS.activo || PAGOS.manual) && !telefono) {
+    $('#telefono').setAttribute('aria-invalid', 'true');
+    mostrarEstado('Escribe tu número de WhatsApp (8 dígitos, por ejemplo 7123 4567) para avisarte cuando tu pago esté aprobado.', true);
+    $('#telefono').focus({ preventScroll: true }); return;
+  }
 
   const boton = $('#btn-generar'); boton.disabled = true;
   try {
     const datos = {
+      telefono,
       id: nuevoId(), paquete: $('#paquete').value,
       destinatario: $('#destinatario').value.trim(), remitente: $('#remitente').value.trim(),
       ocasion: $('#ocasion').value, tema: $('#tema').value, dedicatoria: $('#dedicatoria').value.trim(),
@@ -1844,6 +1983,17 @@ function mensajePedido(d, url) {
     '', `Experiencia: ${url}`
   ].join('\n');
 }
+// Número de El Salvador: 8 dígitos (2, 6 o 7 al inicio). Con "+" se acepta un número internacional.
+function normalizarTelefono(t) {
+  const limpio = String(t || '').replace(/[^\d+]/g, '');
+  if (limpio.startsWith('+')) { const d = limpio.slice(1).replace(/\D/g, ''); return d.length >= 8 && d.length <= 15 ? d : ''; }
+  const d = limpio.replace(/\D/g, '');
+  if (/^[267]\d{7}$/.test(d)) return '503' + d;
+  if (/^503[267]\d{7}$/.test(d)) return d;
+  return '';
+}
+const telefonoVisible = t => t ? (t.startsWith('503') && t.length === 11 ? `+503 ${t.slice(3, 7)} ${t.slice(7)}` : '+' + t) : '';
+const enlaceWhatsAppA = (tel, texto) => `https://wa.me/${tel || ''}?text=${encodeURIComponent(texto)}`;
 const enlaceWhatsApp = texto => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(texto)}`;
 
 async function copiarEnlace() {
@@ -2001,6 +2151,7 @@ $('#btn-ia').addEventListener('click', generarDedicatoria);
 
 /* ---------- Experiencia ---------- */
 let renderToken = 0;
+let contactoError = null;
 
 function pintarIntro({ sobre = '', eyebrow, titulo, texto, boton }) {
   const cont = $('#exp-intro-inner'); cont.replaceChildren();
@@ -2067,7 +2218,7 @@ async function renderExperiencia(params) {
   $('#exp-crear').hidden = !esDemo;
   $('#exp-crear').href = '#personalizar?paquete=' + (PAQUETES[params.get('demo')] ? params.get('demo') : 'especial');
 
-  let datos = null, error = null;
+  let datos = null, error = null; contactoError = null;
   try {
     if (esDemo) datos = DEMOS[params.get('demo')] || DEMO;
     else {
@@ -2078,7 +2229,7 @@ async function renderExperiencia(params) {
         pintarIntro({ sobre: '✉️', eyebrow: 'Un momento', titulo: 'Abriendo tu sorpresa...', texto: 'Estamos cargando las fotos y los mensajes.' });
         try { datos = await bajarRegalo(r); if (local && local.estado !== 'pagado') actualizarEstadoLocal(r, 'pagado'); }
         catch (err) {
-          if (err.tipo === 'pendiente') actualizarEstadoLocal(r, 'pendiente');
+          if (err.tipo === 'pendiente') { actualizarEstadoLocal(r, 'pendiente'); err.message = `Este regalo todavía no está activo. Si ya pagaste, contáctanos por WhatsApp al ${CONFIG.whatsappVisible}.`; err.contacto = contactoBloqueo(r); }
           if (err.tipo === 'red' && local && local.estado === 'pagado') datos = local; // sin internet: copia ya pagada
           else throw err;
         }
@@ -2086,7 +2237,7 @@ async function renderExperiencia(params) {
       if (!datos && id) datos = leerExp()[id] || null;
       if (!datos && d) datos = dePortable(await decodificar(d));
     }
-  } catch (e) { error = e.message; }
+  } catch (e) { error = e.message; contactoError = e.contacto || null; }
   if (tok !== renderToken) return;
 
   if (!datos) {
@@ -2094,7 +2245,9 @@ async function renderExperiencia(params) {
     $('#view-experiencia').dataset.tema = 'clasica';
     pintarIntro(sinId
       ? { eyebrow: 'Experiencia no disponible', titulo: 'Esta sorpresa no existe', texto: 'El enlace está incompleto. Pide a quien te lo envió que lo comparta de nuevo.', boton: { href: '#inicio', texto: 'Volver al inicio' } }
-      : { eyebrow: 'Experiencia no encontrada', titulo: 'No pudimos abrirla', texto: error || 'Este regalo se guardó solo en el navegador donde se creó. Pide a quien te lo envió un enlace nuevo.', boton: { href: '#inicio', texto: 'Conocer Escanéame y Sonríe' } });
+      : contactoError
+        ? { eyebrow: 'Regalo pendiente', titulo: 'Aún no está activo', texto: error, boton: { href: contactoError, texto: `💬 Escribir al ${CONFIG.whatsappVisible}` } }
+        : { eyebrow: 'Experiencia no encontrada', titulo: 'No pudimos abrirla', texto: error || 'Este regalo se guardó solo en el navegador donde se creó. Pide a quien te lo envió un enlace nuevo.', boton: { href: '#inicio', texto: 'Conocer Escanéame y Sonríe' } });
     return;
   }
 
@@ -2143,6 +2296,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAdmin();
   if (typeof qrcode !== 'undefined') dibujarQR($('#qr-hero'), urlBase() + '#experiencia?demo', 208, '#4A1420');
   configPagosLista = cargarConfigPagos();
+  obtenerSW();
   router();
   configPagosLista.then(procesarRetornoPago);
 });
