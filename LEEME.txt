@@ -1,0 +1,48 @@
+CÓMO PUBLICAR ESCANÉAME Y SONRÍE EN NETLIFY (con fotos en el QR e IA)
+
+Contenido:
+  index.html                          la página
+  netlify.toml, package.json          configuración
+  netlify/functions/regalo.mjs        guarda los regalos con fotos (Netlify Blobs)
+  netlify/functions/dedicatoria.mjs   escribe dedicatorias con IA
+
+IMPORTANTE: arrastrar la carpeta a Netlify Drop NO activa las funciones.
+Sin ellas, las fotos solo se ven en el teléfono donde se creó el regalo.
+
+Pasos:
+1. Sube todo el contenido de esta carpeta a un repositorio de GitHub.
+2. En Netlify: Add new site > Import an existing project > elige el repositorio.
+   Deja el comando de build vacío; la carpeta de publicación es "." (ya viene en netlify.toml).
+3. (Para la IA) Site configuration > Environment variables:
+   ANTHROPIC_API_KEY = tu clave de console.anthropic.com
+4. Despliega. Netlify Blobs se activa solo, no requiere configuración.
+5. Prueba: crea un regalo con fotos. Debajo del QR debe decir
+   "Guardado en línea: el QR abre en cualquier teléfono con fotos...".
+   Escanéalo con otro teléfono.
+
+Alternativa sin GitHub (Netlify CLI, desde esta carpeta):
+   npm install -g netlify-cli
+   netlify login
+   netlify deploy --prod
+
+COBRO CON TARJETA (WOMPI) ANTES DE GENERAR EL QR
+1. Crea tu cuenta de comercio en https://wompi.sv y entra al panel (panel.wompi.sv).
+2. En tu negocio/aplicativo copia el "App ID" y el "API Secret".
+3. En Netlify > Project configuration > Environment variables agrega:
+   WOMPI_CLIENT_ID     = tu App ID
+   WOMPI_CLIENT_SECRET = tu API Secret
+   WOMPI_EMAIL_AVISOS  = (opcional) correo donde quieres recibir aviso de cada venta
+4. Vuelve a desplegar (Deploys > Trigger deploy).
+5. Prueba con el negocio en "modo desarrollo" en Wompi: los pagos se aprueban sin cobrar de verdad
+   (usa CVV 111 para simular un rechazo). Cuando todo funcione, pásalo a producción en el panel de Wompi.
+Sin esas variables el sitio funciona como antes (sin cobro).
+Los precios que se cobran están en netlify/functions/pago.mjs (PRECIOS). Si cambias un precio, cámbialo ahí y en index.html.
+
+PAGO MANUAL (TRANSFERENCIA / TRANSFER365) CON PÁGINA DE ADMINISTRADOR
+1. En Netlify > Environment variables agrega ADMIN_CLAVE con una clave larga que solo tú conozcas.
+2. Vuelve a desplegar. El botón cambia a "Reservar mi regalo ($XX)".
+3. El cliente reserva, recibe un código (ej. BBE97A) y te escribe por WhatsApp con su comprobante.
+4. Entra a tu-sitio.netlify.app/#admin, escribe tu clave y toca "Marcar como pagado" en ese código.
+5. El QR le aparece al cliente automáticamente (su página revisa cada 15 segundos o con "Ya pagué: revisar estado").
+Opcional: en index.html, CONFIG.datosPago, escribe tus datos bancarios para mostrarlos al cliente.
+Si después configuras Wompi, el cobro con tarjeta tiene prioridad sobre el pago manual.
