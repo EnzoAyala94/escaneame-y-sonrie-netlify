@@ -15,7 +15,7 @@ const json = (obj, status = 200) => new Response(JSON.stringify(obj), {
 });
 
 export default async (req) => {
-  const store = getStore('regalos');
+  const store = getStore({ name: 'regalos', consistency: 'strong' }); // 'strong': los cambios se ven al instante
 
   if (req.method === 'GET') {
     const id = new URL(req.url).searchParams.get('id') || '';
@@ -24,7 +24,7 @@ export default async (req) => {
     if (!datos) return json({ error: 'No encontramos este regalo' }, 404);
     // Un regalo sin pagar no se puede abrir (los regalos antiguos no tienen estado y se consideran pagados)
     if (datos.estado === 'pendiente') return json({ error: 'Este regalo todavía no está activo.', estado: 'pendiente' }, 402);
-    const { idEnlace, pago, ...publico } = datos;
+    const { idEnlace, pago, telefono, bloqueado, ...publico } = datos; // datos privados no se envían
     return json(publico);
   }
 
@@ -40,6 +40,7 @@ export default async (req) => {
       paquete: txt(b.paquete, 20), destinatario: txt(b.destinatario, 40), remitente: txt(b.remitente, 40),
       ocasion: txt(b.ocasion, 20), tema: txt(b.tema, 20), dedicatoria: txt(b.dedicatoria, 400),
       musica: txt(b.musica, 200), mensajeFinal: txt(b.mensajeFinal, 200),
+      telefono: txt(String(b.telefono || '').replace(/[^\d+]/g, ''), 16), // WhatsApp del cliente (solo lo ve el administrador)
       recuerdos: (Array.isArray(b.recuerdos) ? b.recuerdos : []).slice(0, 20).map(r => ({ titulo: txt(r?.titulo, 30), texto: txt(r?.texto, 120) })),
       fotos, creado: new Date().toISOString(),
       // Con Wompi configurado, el regalo queda pendiente hasta que se pague

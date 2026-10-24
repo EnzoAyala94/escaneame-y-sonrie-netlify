@@ -59,7 +59,7 @@ async function wompi(ruta, opciones = {}) {
   return d;
 }
 async function marcarPagado(store, id, datos, pago) {
-  if (datos.estado === 'pagado') return;
+  if (datos.estado && datos.estado !== 'pendiente') return;
   await store.setJSON(id, { ...datos, estado: 'pagado', pago: { ...pago, fecha: new Date().toISOString() } });
 }
 
@@ -80,7 +80,7 @@ async function webhook(req, store) {
 }
 
 export default async (req) => {
-  const store = getStore('regalos');
+  const store = getStore({ name: 'regalos', consistency: 'strong' }); // 'strong': los cambios se ven al instante
   const url = new URL(req.url);
   try {
     if (url.pathname.endsWith('/webhook-wompi')) return await webhook(req, store);
@@ -91,7 +91,7 @@ export default async (req) => {
       if (!ID_OK.test(id)) return json({ error: 'Enlace no válido' }, 400);
       const datos = await store.get(id, { type: 'json' });
       if (!datos) return json({ error: 'No encontramos este regalo' }, 404);
-      return json({ estado: datos.estado || 'pagado' });
+      return json({ estado: datos.estado === 'pendiente' ? 'pendiente' : 'pagado' }); // entregado cuenta como pagado
     }
     if (req.method !== 'POST') return json({ error: 'Método no permitido' }, 405);
     if (!activo()) return json({ error: 'Los pagos con tarjeta todavía no están configurados.' }, 503);
@@ -101,7 +101,7 @@ export default async (req) => {
     if (!ID_OK.test(id)) return json({ error: 'Regalo no válido' }, 400);
     const datos = await store.get(id, { type: 'json' });
     if (!datos) return json({ error: 'No encontramos este regalo' }, 404);
-    if ((datos.estado || 'pagado') === 'pagado') return json({ estado: 'pagado' });
+    if ((datos.estado || 'pagado') !== 'pendiente') return json({ estado: 'pagado' }); // pagado o entregado
     const precio = PRECIOS[datos.paquete];
     if (!precio) return json({ error: 'Paquete no válido' }, 400);
 
